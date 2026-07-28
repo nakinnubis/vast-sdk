@@ -1236,6 +1236,10 @@ def vm__copy(args: argparse.Namespace):
         Copies a directory from a source location to a target location. Each of source and destination
         directories can be either local or remote, subject to appropriate read and write
         permissions required to carry out the action. The format for both src and dst is [instance_id:]path.
+        Supported cloud types are drive, s3, b2, dropbox, and hf (Hugging Face).
+        For Hugging Face, use a connection whose cloud_type is "hf" from 'vastai show connections'.
+        Cloud-side paths use <bucket>/<path>. Destination bucket paths must already exist;
+        directories are not created automatically.
         You can find more information about the cloud copy operation here: https://vast.ai/docs/gpu-instances/cloud-sync
                     
         Examples:
@@ -1243,15 +1247,18 @@ def vm__copy(args: argparse.Namespace):
          ID    NAME      Cloud Type
          1001  test_dir  drive 
          1003  data_dir  drive 
+         101   hf_data   hf
          
          vastai cloud_copy --src /folder --dst /workspace --instance 6003036 --connection 1001 --transfer "Instance To Cloud"
+         vastai cloud copy --src my-bucket/data --dst /workspace --instance 6003036 --connection 101 --transfer "Cloud To Instance"
 
-        The example copies all contents of /folder into /workspace on instance 6003036 from gdrive connection 'test_dir'.
+        The first cloud copy example copies all contents of /folder on instance 6003036 into /workspace in gdrive connection 'test_dir'.
+        The second cloud copy example copies my-bucket/data from Hugging Face connection 'hf_data' into /workspace on the instance.
     """),
 )
 def cloud__copy(args: argparse.Namespace):
     """
-    Transfer data from one instance to another.
+    Transfer data between an instance and a cloud provider.
 
     @param src: Location of data object to be copied.
     @param dst: Target to copy object to.
@@ -3502,7 +3509,9 @@ def show__endpoints(args):
 )
 def show__connections(args):
     """
-    Shows the stats on the machine the user is renting.
+    Shows the user's cloud connections.
+
+    Supported cloud types are drive, s3, b2, dropbox, and hf (Hugging Face).
 
     :param argparse.Namespace args: should supply all the command-line options
     :rtype:

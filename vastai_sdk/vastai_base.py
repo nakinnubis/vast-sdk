@@ -33,7 +33,14 @@ class VastAIBase(ABC):
         connection: Optional[str] = None,
         transfer: str = "Instance to Cloud",
     ) -> str:
-        """Copy files between cloud and instance."""
+        """Copy files between a cloud provider and an instance.
+
+        Supported cloud providers are ``drive``, ``s3``, ``b2``, ``dropbox``,
+        and Hugging Face (``hf``). For Hugging Face, use a connection from
+        ``show_connections`` whose ``cloud_type`` is ``"hf"``. Cloud-side paths
+        use ``<bucket>/<path>``. Destination bucket paths must already exist;
+        directories are not created automatically.
+        """
         pass
 
     def create_api_key(
@@ -329,7 +336,11 @@ class VastAIBase(ABC):
         pass
 
     def show_connections(self) -> str:
-        """Show all connections."""
+        """Show all cloud connections.
+
+        Supported cloud providers are ``drive``, ``s3``, ``b2``, ``dropbox``,
+        and Hugging Face (``hf``).
+        """
         pass
 
     def show_deposit(self, Id: int) -> str:
